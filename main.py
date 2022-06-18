@@ -6,16 +6,23 @@ input_box.place(x=20, y=10)
 input_box.tag_configure("right-left", justify="right")
 input_box.config(state='disabled')
 
+
 class Calculator:
 
     def calculate(self):
-        self.operation = input_box.get(1.0, END).replace(" ", "")
-        self.operation = eval(self.operation)
-        result = round(self.operation, 2)
-        input_box.config(state='normal')
-        input_box.delete(1.0, END)
-        input_box.insert(1.0, result, 'right-left')
-        input_box.config(state='disabled')
+        try:
+            self.operation = input_box.get(1.0, END).replace(" ", "")
+            self.operation = eval(self.operation)
+            result = round(self.operation, 2)
+            input_box.config(state='normal')
+            input_box.delete(1.0, END)
+            input_box.insert(1.0, result, 'right-left')
+            input_box.config(state='disabled')
+        except:
+            input_box.config(state='normal')
+            input_box.delete(1.0, END)
+            input_box.insert(1.0, "E", 'right-left')
+            input_box.config(state='disabled')
 
 calculator = Calculator()
 
@@ -26,6 +33,7 @@ class Gui:
         window.resizable(False, False)
         window.config(background="black")
         window.title("Simple calculator by Julian Jaros")
+        self.special_char = True
 
     def insert_num(self, number):
         length = len(input_box.get(1.0, END).replace(" ", ""))
@@ -33,9 +41,19 @@ class Gui:
         if length > 8:
             pass
         else:
+
             input_box.config(state='normal')
-            input_box.insert(END, number, 'right-left')
+
+            if number not in [".", "/", "*", "+", "-"]:
+                input_box.insert(END, number, 'right-left')
+                self.special_char = False
+
+            elif number in [".", "/", "*", "+", "-"] and self.special_char == False:
+                input_box.insert(END, number, 'right-left')
+                self.special_char = True
+
             input_box.config(state='disabled')
+
 
     def clear_window(self):
         input_box.config(state='normal')
